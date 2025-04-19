@@ -13,9 +13,9 @@ const PageWithBackButton = ({
 }) => {
     return (
         <>
-            <ButtonLink href={backHref} className="flex gap-1 pt-2 w-fit">
+            <ButtonLink href={backHref} className="flex gap-0.5 pt-2 w-fit text-white">
                 <ChevronLeft className="size-6" />
-                Back
+                <p>Back</p>
             </ButtonLink>
             <section className={cn("flex flex-col gap-2 px-2 min-h-[95vh]", className)}>
                 {children}
