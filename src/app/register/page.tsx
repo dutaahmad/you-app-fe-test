@@ -4,16 +4,10 @@ import PageWithBackButton from "@/components/page-with-back-button";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { RegisterFormSchema } from "@/zod/auth-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-const RegisterFormSchema = z.object({
-  email: z.string().email(),
-  username: z.string().min(3),
-  password: z.string().min(5),
-  confirmPassword: z.string().min(5)
-});
 
 const RegisterPage = () => {
   const form = useForm<z.infer<typeof RegisterFormSchema>>({
@@ -28,7 +22,7 @@ const RegisterPage = () => {
   function onSubmit(values: z.infer<typeof RegisterFormSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values)
+    console.log(values);
   }
 
   return (
@@ -92,7 +86,7 @@ const RegisterPage = () => {
         </Form>
       </div>
     </PageWithBackButton>
-  )
-}
+  );
+};
 
-export default RegisterPage
+export default RegisterPage;

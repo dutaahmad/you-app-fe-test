@@ -1,6 +1,6 @@
-import ButtonLink from "@/components/button-link"
-import { cn } from "@/lib/utils"
-import { ChevronLeft, PencilLine } from "lucide-react"
+import ButtonLink from "@/components/button-link";
+import { cn } from "@/lib/utils";
+import { ChevronLeft, PencilLine } from "lucide-react";
 
 const AboutPage = () => {
     return (
@@ -39,7 +39,7 @@ const AboutPage = () => {
                 </div>
             </div>
         </section>
-    )
-}
+    );
+};
 
-export default AboutPage
+export default AboutPage;

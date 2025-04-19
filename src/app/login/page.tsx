@@ -1,33 +1,39 @@
-"use client"
+"use client";
 
-import PageWithBackButton from "@/components/page-with-back-button"
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-
-const LoginFormSchema = z.object({
-    email: z.string().email(),
-    username: z.string().min(3),
-    password: z.string().min(5)
-})
+import PageWithBackButton from "@/components/page-with-back-button";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { LoginFormSchema } from "@/zod/auth-schemas";
+import { loginAction } from "@/server-actions/auth-actions";
 
 const LoginPage = () => {
+    const router = useRouter();
     const form = useForm<z.infer<typeof LoginFormSchema>>({
         resolver: zodResolver(LoginFormSchema),
         defaultValues: {
-            email: "",
-            username: "",
-            password: ""
+            email: "dutaahmadtefur@gmail.com",
+            username: "dutaahmad",
+            password: "kopibuket123"
         },
     });
 
-    function onSubmit(values: z.infer<typeof LoginFormSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof LoginFormSchema>) {
+        try {
+            // const loginFormData = new FormData();
+            // loginFormData.append("email", values.email);
+            // loginFormData.append("username", values.username);
+            // loginFormData.append("password", values.password);
+
+            const res = await loginAction(values);
+            if (res.status) router.push("/about");
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (
@@ -79,7 +85,7 @@ const LoginPage = () => {
                 </Form>
             </div>
         </PageWithBackButton>
-    )
-}
+    );
+};
 
-export default LoginPage
+export default LoginPage;
