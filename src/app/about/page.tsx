@@ -1,3 +1,5 @@
+"use client";
+
 import ButtonLink from "@/components/button-link";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, PencilLine } from "lucide-react";

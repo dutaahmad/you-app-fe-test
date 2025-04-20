@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { HttpMethods, YouAppFetchRequest, YouAppRequestHeaders } from "./generic-types";
+import { env } from "@/env";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -11,12 +12,14 @@ export async function youAppFetch<TResponseData, TRequestBody = unknown, TURLPar
     "Content-Type": "application/json",
   };
 
-  if (requestInit.withAuth) {
+  if (requestInit.token) {
     headers = {
       ...headers,
       "x-access-token": requestInit.token,
     };
   }
+
+  let url = env.NEXT_PUBLIC_YOU_APP_API_URL + "/" + requestInit.path;
   switch (requestInit.method) {
     case HttpMethods.GET:
       if (requestInit.params) {
@@ -24,36 +27,36 @@ export async function youAppFetch<TResponseData, TRequestBody = unknown, TURLPar
         Object.entries(requestInit.params).forEach(([key, value]) => {
           urlSearchParams.append(key, value as string);
         });
-        requestInit.url += `?${urlSearchParams.toString()}`;
+        url += `?${urlSearchParams.toString()}`;
       }
-      return fetch(requestInit.url, {
+      return fetch(url, {
         method: requestInit.method,
         // @ts-expect-error YouAppRequestHeader is not assignable to HeadersInit
         headers: headers,
       }).then((res) => res.json());
     case HttpMethods.POST:
-      return fetch(requestInit.url, {
+      return fetch(url, {
         method: requestInit.method,
         // @ts-expect-error YouAppRequestHeader is not assignable to HeadersInit
         headers: headers,
         body: JSON.stringify(requestInit.data),
       }).then((res) => res.json());
     case HttpMethods.PUT:
-      return fetch(requestInit.url, {
+      return fetch(url, {
         method: requestInit.method,
         // @ts-expect-error YouAppRequestHeader is not assignable to HeadersInit
         headers: headers,
         body: JSON.stringify(requestInit.data),
       }).then((res) => res.json());
     case HttpMethods.DELETE:
-      return fetch(requestInit.url, {
+      return fetch(url, {
         method: requestInit.method,
         // @ts-expect-error YouAppRequestHeader is not assignable to HeadersInit
         headers: headers,
         body: JSON.stringify(requestInit.data),
       }).then((res) => res.json());
     case HttpMethods.PATCH:
-      return fetch(requestInit.url, {
+      return fetch(url, {
         method: requestInit.method,
         // @ts-expect-error YouAppRequestHeader is not assignable to HeadersInit
         headers: headers,

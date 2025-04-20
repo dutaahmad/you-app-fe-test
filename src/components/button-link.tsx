@@ -16,7 +16,7 @@ const ButtonLink = ({ href, children, className }: { href: string, children: Rea
                 {children}
             </Link>
         </Button>
-    )
-}
+    );
+};
 
-export default ButtonLink
+export default ButtonLink;

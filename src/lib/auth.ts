@@ -1,6 +1,7 @@
 import { env } from "@/env";
 import NextAuth, { User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import type { JWT } from "next-auth/jwt";
 import * as jose from 'jose';
 
 interface LoginResponse {
@@ -11,6 +12,7 @@ interface LoginResponse {
 // 2. Define the User object you'll work with in NextAuth
 interface AppUser extends User {
     accessToken: string;
+    expiration: number;
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -48,14 +50,58 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     username: string;
                 };
 
+                console.log({ decodedToken });
+
                 // return user object with their profile data
                 return {
                     id: decodedToken.id,
                     email: decodedToken.email,
                     username: decodedToken.username,
                     accessToken: loginResponse.access_token,
+                    expiration: decodedToken.exp
                 } as AppUser;
             }
         })
     ],
+    callbacks: {
+        async jwt({ token, user, account }) {
+            console.log({
+                message: "auth.js - jwt",
+                token,
+                user,
+                account
+            });
+
+            // Initial signin contains a 'User' object from authorize method
+            if (user && account) {
+                console.debug("Initial signin");
+                return { ...token, data: user };
+            }
+
+            // The current access token is still valid
+            // @ts-expect-error token.data is considered unknown
+            if (Date.now() < token.data.expiration * 1000) {
+                console.debug("Access token is still valid");
+                return token;
+            }
+
+            // The current access token and refresh token have both expired
+            // This should not really happen unless you get really unlucky with
+            // the timing of the token expiration because the middleware should
+            // have caught this case before the callback is called
+            console.debug("Both tokens have expired");
+            return { ...token, error: "RefreshTokenExpired" } as JWT;
+        },
+
+        async session({ session, token }) {
+            // @ts-expect-error token.data is considered unknown
+            session.user = token.data;
+            // @ts-expect-error token.data is considered unknown
+            const tokenExpire = token.data.expiration as number;
+            // @ts-expect-error session.expires cannot accept Date, must be Date & string
+            session.expires = new Date(tokenExpire * 1000);
+            console.log({ message: "auth.js - session", session });
+            return session;
+        }
+    }
 });

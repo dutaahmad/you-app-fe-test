@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { LoginFormSchema } from "@/zod/auth-schemas";
 import { loginAction } from "@/server-actions/auth-actions";
+import ButtonLink from "@/components/button-link";
 
 const LoginPage = () => {
     const router = useRouter();
@@ -24,11 +25,6 @@ const LoginPage = () => {
 
     async function onSubmit(values: z.infer<typeof LoginFormSchema>) {
         try {
-            // const loginFormData = new FormData();
-            // loginFormData.append("email", values.email);
-            // loginFormData.append("username", values.username);
-            // loginFormData.append("password", values.password);
-
             const res = await loginAction(values);
             if (res.status) router.push("/about");
         } catch (error) {
@@ -80,9 +76,14 @@ const LoginPage = () => {
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit" size={"lg"} variant={"glow"} disabled={!form.formState.isValid}>Login</Button>
+                        <Button type="submit" size={"lg"} variant={"glow"} disabled={!form.formState.isValid}>
+                            Login
+                        </Button>
                     </form>
                 </Form>
+            </div>
+            <div className="flex items-center gap-1 mt-6">
+                <p>No account?</p> <ButtonLink href="/register">Register here</ButtonLink>
             </div>
         </PageWithBackButton>
     );

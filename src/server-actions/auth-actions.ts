@@ -1,12 +1,13 @@
 "use server";
 
 import { env } from "@/env";
-import { signIn } from "@/lib/auth";
+import { auth, signIn, signOut } from "@/lib/auth";
 import { LoginFormInterface, RegisterFormInterface, RegisterResponseInterface } from "@/zod/auth-schemas";
+import { Session } from "next-auth";
 
 export async function loginAction(data: LoginFormInterface) {
     try {
-        await signIn("credentials", {...data, redirect: false});
+        await signIn("credentials", { ...data, redirect: false });
         return { message: "Login Successful", status: true };
     } catch (error) {
         console.error({
@@ -15,6 +16,11 @@ export async function loginAction(data: LoginFormInterface) {
         });
         return { message: "Login Failed", status: false };
     }
+}
+
+export async function logoutAction() {
+    await signOut();
+    return { message: "Logout Successful", status: true };
 }
 
 export async function registerAction(params: RegisterFormInterface) {
@@ -38,4 +44,19 @@ export async function registerAction(params: RegisterFormInterface) {
             error
         };
     }
+}
+
+export async function getSession() {
+    const session = await auth();
+    return session as Session & {
+        "user": {
+            "id": string,
+            "email": string,
+            "username": string,
+            "accessToken": string,
+            "expiration": number
+        },
+        /** actually DateString */
+        "expires": "string"
+    };
 }
