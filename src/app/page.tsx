@@ -19,12 +19,12 @@ export default async function Home() {
       </div>
     );
 
-  const userProfile = getProfile();
+  const userProfile = await getProfile();
 
   return (
     <div className="flex flex-col justify-center items-center gap-8 h-screen">
       <Avatar className="size-20">
-        <AvatarImage src={(await userProfile).data.avatar} alt="@dutaahmad" />
+        <AvatarImage src={userProfile.data?.avatar} alt="@dutaahmad" />
         <AvatarFallback className="text-3xl">{session.user.username.charAt(0).toUpperCase()}</AvatarFallback>
       </Avatar>
       <h1 className="font-extrabold text-4xl lg:text-5xl tracking-tight scroll-m-20">YouApp</h1>

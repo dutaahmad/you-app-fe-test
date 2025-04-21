@@ -21,13 +21,19 @@ export const CreateProfileResponseDataSchema = GetProfileResponseDataSchema;
 
 export const UpdateAndCreateProfileRequestDataSchema = z.object({
     name: z.string().optional(),
-    birthday: z.string().optional(),
-    height: z.number().optional(),
-    weight: z.number().optional(),
-    interests: z.array(z.string()).optional()
+    birthday: z.date().optional(),
+    height: z.string().refine((val) => !isNaN(Number(val)), { message: "Invalid number" }).transform(Number).optional(),
+    weight: z.string().refine((val) => !isNaN(Number(val)), { message: "Invalid number" }).transform(Number).optional(),
+    interests: z.array(z.string()).optional(),
+    avatar: z.instanceof(File).optional(),
+});
+
+export const InterestsUpdateSchema = z.object({
+    interests: z.array(z.string())
 });
 
 export type GetProfileResponseData = z.infer<typeof GetProfileResponseDataSchema>;
 export type UpdateProfileResponseData = z.infer<typeof UpdateProfileResponseDataSchema>;
 export type CreateProfileResponseData = z.infer<typeof CreateProfileResponseDataSchema>;
 export type UpdateAndCreateProfileRequestData = z.infer<typeof UpdateAndCreateProfileRequestDataSchema>;
+export type InterestsUpdateSchema = z.infer<typeof InterestsUpdateSchema>;

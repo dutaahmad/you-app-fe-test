@@ -7,6 +7,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export async function youAppFetch<TResponseData, TRequestBody = unknown, TURLParams = Record<string, string>>(requestInit: YouAppFetchRequest<TRequestBody, TURLParams>): Promise<TResponseData> {
   let headers: YouAppRequestHeaders = {
     "Content-Type": "application/json",
