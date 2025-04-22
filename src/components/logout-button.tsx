@@ -5,7 +5,7 @@ import { logoutAction } from "@/server-actions/auth-actions";
 
 const LogoutButton = () => {
     return (
-        <Button onClick={async () => await logoutAction()} variant="destructive" size="lg">
+        <Button onClick={async () => await logoutAction()} variant="link" className="text-red-500" size="lg">
             Logout
         </Button>
     );

@@ -14,6 +14,10 @@ export enum ApiPaths {
     CREATE_PROFILE = "createProfile",
 }
 
+export enum InternalApiPaths {
+    PROFILE_PICTURE = "profile-picture",
+}
+
 export interface YouAppRequestHeaders extends Partial<Headers> {
     ['x-access-token']?: string;
     ['Content-Type']: string;

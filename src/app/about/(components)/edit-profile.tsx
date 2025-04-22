@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { updateProfile } from "@/server-actions/profile-actions";
+import { updateProfile, uploadProfilePicture } from "@/server-actions/profile-actions";
 import { GetProfileResponseData, UpdateAndCreateProfileRequestDataSchema } from "@/zod/profile-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
@@ -45,12 +45,19 @@ const EditProfile = ({
 
   const onSubmit = async (values: z.infer<typeof UpdateAndCreateProfileRequestDataSchema>) => {
     console.log({
-      message: "edi-profile - save",
+      message: "edit-profile - save",
       values
     });
 
     try {
-      const response = await updateProfile(values);
+      const response = await updateProfile({
+        ...values,
+        avatar: undefined
+      });
+      if (values.avatar) {
+        const uploadProfilePictureResponse = await uploadProfilePicture(values.avatar);
+        console.log({ uploadProfilePictureResponse });
+      }
       console.log({ updatedProfile: response });
       router.push('/about');
     } catch (error) {

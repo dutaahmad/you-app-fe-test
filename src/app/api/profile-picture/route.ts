@@ -1,13 +1,13 @@
 import { writeFile, access } from "fs/promises";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/server-actions/auth-actions";
 import { constants } from "fs";
+import { auth } from "@/lib/auth";
 
 const allowedMimeTypes = ["image/jpeg", "image/jpg", "image/png"];
 
 export async function GET() {
-    const session = await getSession();
+    const session = await auth();
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const extensions = ["jpg", "jpeg", "png"];
@@ -16,10 +16,10 @@ export async function GET() {
     let foundFile: string | null = null;
 
     for (const ext of extensions) {
-        const possibleFile = path.join(uploadsDir, `${session.user.email}.${ext}`);
+        const possibleFile = path.join(uploadsDir, `${session.user?.email}.${ext}`);
         try {
             await access(possibleFile, constants.F_OK);
-            foundFile = `/uploads/${session.user.email}.${ext}`;
+            foundFile = `/uploads/${session.user?.email}.${ext}`;
             break;
         } catch {
             continue;
@@ -34,7 +34,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-    const session = await getSession();
+    const session = await auth();
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const formData = await req.formData();
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
     if (!file) return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
 
     const extension = file.name.split(".").pop();
-    const fileName = `${session.user.email}.${extension}`;
+    const fileName = `${session.user?.email}.${extension}`;
     const uploadsDir = path.join(process.cwd(), "public", "uploads");
     const filePath = path.join(uploadsDir, fileName);
 

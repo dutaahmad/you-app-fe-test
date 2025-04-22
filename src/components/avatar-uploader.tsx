@@ -18,10 +18,11 @@ export function AvatarUploader({ currentImageUrl, onSelectImage }: AvatarUploade
     if (file && onSelectImage) {
       onSelectImage(file);
     }
+    console.log(file);
   };
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex items-center gap-4">
       <div
         onClick={handleClick}
         className="relative flex justify-center items-center bg-white/10 rounded-2xl w-16 h-16 overflow-hidden text-white cursor-pointer"
@@ -44,7 +45,7 @@ export function AvatarUploader({ currentImageUrl, onSelectImage }: AvatarUploade
           onChange={handleFileChange}
         />
       </div>
-      <span className="text-muted-foreground text-sm">Add image</span>
+      <span className="text-white text-sm">Add image</span>
     </div>
   );
 }
